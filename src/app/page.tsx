@@ -23,14 +23,13 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {createUsers, deleteUser, getUsers, updateUser} from "@/app/api/user";
-
-interface IUser {
-  id: bigint;
-  created_at: Date;
-  updated_at: Date;
-  name: string;
-}
+import {
+  getUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "@/app/services/user";
+import {IUser} from "@/types";
 
 export default function UserTable() {
   const [open, setOpen] = useState<boolean>(false)
@@ -58,7 +57,7 @@ export default function UserTable() {
   const handleCreateUser = async () => {
     try {
       setLoading(true)
-      const res = await createUsers({name})
+      const res = await createUser({name})
 
       if (res) {
         handleCloseDialog()
@@ -74,7 +73,7 @@ export default function UserTable() {
     try {
       setLoading(true)
       if (selectedUser) {
-        const res = await updateUser(selectedUser.id, selectedUser)
+        const res = await updateUser(selectedUser)
 
         if (res) {
           handleCloseDialog()
@@ -109,14 +108,14 @@ export default function UserTable() {
     setName("")
   }
 
-  const handleSetName = (e) => {
+  const handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value)
   }
 
-  const handleSetSelectedUser = (e) => {
-    setSelectedUser(prev => {
+  const handleSetSelectedUser = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedUser((prev) => {
       return {
-        ...prev ?? {},
+        ...(prev ?? {} as IUser),
         name: e.target.value
       }
     })
