@@ -23,12 +23,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  getUsers,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "@/app/services/user";
+import {createUser, deleteUser, getUsers, updateUser,} from "@/app/services/user";
 import {IUser} from "@/types";
 
 export default function UserTable() {

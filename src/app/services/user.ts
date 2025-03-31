@@ -4,7 +4,7 @@ import axios from "axios";
 export const getUsers = async () => {
   try {
 
-    const { data } = await axios.get('/api/user')
+    const {data} = await axios.get('/api/user')
 
     if (data) {
       return await data
@@ -18,7 +18,7 @@ export const getUsers = async () => {
 export const createUser = async (body: { name: string }) => {
   try {
     if (!body.name) {
-      return { error: "Name is required", status: 400 };
+      return {error: "Name is required", status: 400};
     }
 
     const data = await axios.post<IUser>('/api/user', body);
@@ -28,14 +28,14 @@ export const createUser = async (body: { name: string }) => {
     }
   } catch (err) {
     console.log(err);
-    return { error: "Failed to create user", status: 500 };
+    return {error: "Failed to create user", status: 500};
   }
 }
 
 export const updateUser = async (body: IUser) => {
   try {
     if (!body) {
-      return { error: "No user selected.", status: 400 };
+      return {error: "No user selected.", status: 400};
     }
 
     const data = await axios.put<IUser>('/api/user', body);
@@ -45,14 +45,14 @@ export const updateUser = async (body: IUser) => {
     }
   } catch (err) {
     console.log(err);
-    return { error: "Failed to create user", status: 500 };
+    return {error: "Failed to create user", status: 500};
   }
 }
 
 export const deleteUser = async (id: bigint) => {
   try {
     if (!id) {
-      return { error: "No user selected.", status: 400 };
+      return {error: "No user selected.", status: 400};
     }
 
     const data = await axios.delete('/api/user', {
@@ -66,6 +66,6 @@ export const deleteUser = async (id: bigint) => {
     }
   } catch (err) {
     console.log(err);
-    return { error: "Failed to create user", status: 500 };
+    return {error: "Failed to create user", status: 500};
   }
 }

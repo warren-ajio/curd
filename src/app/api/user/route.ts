@@ -48,8 +48,8 @@ export const PUT = async (body: Request) => {
   try {
     const parsedBody = await body.json()
     const res = await prisma.user.update({
-      where: { id: BigInt(parsedBody.id) }, // Convert string ID to bigint
-      data: { ...parsedBody },
+      where: {id: BigInt(parsedBody.id)}, // Convert string ID to bigint
+      data: {...parsedBody},
     });
 
     if (res) {
@@ -57,7 +57,7 @@ export const PUT = async (body: Request) => {
     }
   } catch (err) {
     console.log(err);
-    return { error: "Failed to create user", status: 500 };
+    return {error: "Failed to create user", status: 500};
   }
 }
 
@@ -66,7 +66,7 @@ export const DELETE = async (body: Request) => {
     const {id} = await body.json()
 
     const res = await prisma.user.delete({
-      where: { id },
+      where: {id},
     });
 
     if (res) {
@@ -74,6 +74,6 @@ export const DELETE = async (body: Request) => {
     }
   } catch (err) {
     console.log(err);
-    return { error: "Failed to create user", status: 500 };
+    return {error: "Failed to create user", status: 500};
   }
 }
