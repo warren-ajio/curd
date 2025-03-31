@@ -40,18 +40,22 @@ export default function UserTable() {
   const [users, setUsers] = useState<IUser[]>([])
   const [selectedUser, setSelectedUser] = useState<IUser>()
 
-  const handleGetUser = async () => {
-    try {
-      setLoading(true)
-      const res = await getUsers()
+  const handleGetUsers = () => {
+    const handleOnGetUsers = async () => {
+      try {
+        setLoading(true)
+        const res = await getUsers()
 
-      if (res) {
-        setUsers(res)
-        setLoading(false)
+        if (res) {
+          setUsers(res)
+          setLoading(false)
+        }
+      } catch (error) {
+        console.log("error - getUser", error)
       }
-    } catch (error) {
-      console.log("error - getUser", error)
     }
+
+    handleOnGetUsers()
   }
 
   const handleCreateUser = async () => {
@@ -62,7 +66,7 @@ export default function UserTable() {
       if (res) {
         handleCloseDialog()
         setLoading(false)
-        await handleGetUser()
+        handleGetUsers()
       }
     } catch (error) {
       console.log("error - createUser", error)
@@ -78,7 +82,7 @@ export default function UserTable() {
         if (res) {
           handleCloseDialog()
           setLoading(false)
-          await handleGetUser()
+          handleGetUsers()
         }
       }
     } catch (error) {
@@ -95,7 +99,7 @@ export default function UserTable() {
         if (res) {
           handleCloseDialog()
           setLoading(false)
-          await handleGetUser()
+          handleGetUsers()
         }
       }
     } catch (error) {
@@ -128,9 +132,7 @@ export default function UserTable() {
     setOpen(true)
   }
 
-  useEffect(() => {
-    handleGetUser()
-  }, [])
+  useEffect(handleGetUsers, [])
 
   const displayDialog = () => {
     switch (dialogType) {
