@@ -40,7 +40,7 @@ export const POST = async (body: Request) => {
     }
   } catch (err) {
     console.log(err);
-    return {error: "Failed to create user", status: 500};
+    return NextResponse.json({error: "Failed to create user"}, {status: 500});
   }
 }
 
@@ -57,7 +57,7 @@ export const PUT = async (body: Request) => {
     }
   } catch (err) {
     console.log(err);
-    return {error: "Failed to create user", status: 500};
+    return NextResponse.json({error: "Failed to update user"}, {status: 500});
   }
 }
 
@@ -74,6 +74,6 @@ export const DELETE = async (body: Request) => {
     }
   } catch (err) {
     console.log(err);
-    return {error: "Failed to create user", status: 500};
+    return NextResponse.json({error: "Failed to delete user"}, {status: 500});
   }
 }

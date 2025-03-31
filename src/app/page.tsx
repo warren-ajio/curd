@@ -5,10 +5,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Paper,
   Table,
@@ -17,13 +13,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useUserActions} from "@/hooks/useUserActions";
+import {ModalDialog} from "@/components/ModalDialog"
+import {capitalize} from "@/utils/capitalize";
 
 export default function UserTable() {
   const {
@@ -42,57 +39,25 @@ export default function UserTable() {
     handleSetSelectedUser,
   } = useUserActions()
 
-  const displayDialog = () => {
-    switch (dialogType) {
-      case "add":
-      case "edit":
-        return (
-            <Dialog open={isOpen} onClose={handleCloseDialog}>
-              <DialogTitle>{dialogType === "add" ? "Create" : "Update"} User</DialogTitle>
-              <DialogContent>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    label="Name"
-                    fullWidth
-                    variant="outlined"
-                    value={dialogType === "add" ? name : selectedUser?.name}
-                    onChange={dialogType === "add" ? handleSetName : handleSetSelectedUser}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleCloseDialog} color="error">
-                  Cancel
-                </Button>
-                <Button
-                    onClick={dialogType === "add" ? handleCreateUser : handleUpdateUser}
-                    color="primary"
-                >
-                  {dialogType === "add" ? "Create" : "Update"}
-                </Button>
-              </DialogActions>
-            </Dialog>
-        )
-      case "delete":
-        return (
-            <Dialog open={isOpen} onClose={handleCloseDialog}>
-              <DialogTitle>Confirm Delete</DialogTitle>
-              <DialogContent>
-                <Typography>
-                  Are you sure you want to delete{" "}
-                  <strong>{selectedUser?.name}</strong>? This action cannot be undone.
-                </Typography>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleCloseDialog} color="primary">
-                  Cancel
-                </Button>
-                <Button onClick={handleDeleteUser} color="error">
-                  Delete
-                </Button>
-              </DialogActions>
-            </Dialog>
-        )
+  const modalProps = {
+    add: {
+      modalBody: "",
+      confirmButtonLabel: 'Create',
+      inputValue: name,
+      handleOnChangeText: handleSetName,
+      handleOnSubmit: handleCreateUser,
+    },
+    update: {
+      modalBody: "",
+      confirmButtonLabel: 'Update',
+      inputValue: selectedUser?.name,
+      handleOnChangeText: handleSetSelectedUser,
+      handleOnSubmit: handleUpdateUser,
+    },
+    delete: {
+      modalBody: <span>Are you sure you want to delete <strong>{selectedUser?.name}</strong>. This action cannot be undone.</span>,
+      confirmButtonLabel: 'Delete',
+      handleOnSubmit: handleDeleteUser,
     }
   }
 
@@ -102,7 +67,6 @@ export default function UserTable() {
           User Management
         </Typography>
 
-        {/* CREATE BUTTON */}
         <Button
             variant="contained"
             color="primary"
@@ -113,7 +77,6 @@ export default function UserTable() {
           Create User
         </Button>
 
-        {/* TABLE */}
         <TableContainer component={Paper} sx={{overflowX: "auto"}}>
           <Table>
             <TableHead>
@@ -138,7 +101,7 @@ export default function UserTable() {
                         <TableCell>
                           <IconButton
                               color="primary"
-                              onClick={handleOpenDialog("edit", user)}
+                              onClick={handleOpenDialog("update", user)}
                           >
                             <EditIcon/>
                           </IconButton>
@@ -162,7 +125,14 @@ export default function UserTable() {
           </Table>
         </TableContainer>
 
-        {displayDialog()}
+        <ModalDialog
+            {...modalProps[dialogType as keyof typeof modalProps] ?? {}}
+            isOpen={isOpen}
+            title={`${capitalize(dialogType)} User`}
+            type={["add", "update"].includes(dialogType) ? "input" : "text"}
+            handleCloseDialog={handleCloseDialog}
+            handleOnCancel={handleCloseDialog}
+        />
       </Container>
   );
 }
