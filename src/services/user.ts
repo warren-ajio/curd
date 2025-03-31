@@ -4,13 +4,13 @@ import axios from "axios";
 export const getUsers = async () => {
   try {
 
-    const {data} = await axios.get('/api/user')
+    const {data} = await axios.get('/api/user');
 
     if (data) {
-      return await data
+      return data
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return {error: "Failed to fetch users"};
   }
 }
@@ -27,7 +27,7 @@ export const createUser = async (body: { name: string }) => {
       return data
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return {error: "Failed to create user", status: 500};
   }
 }
@@ -44,7 +44,7 @@ export const updateUser = async (body: IUser) => {
       return data
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return {error: "Failed to create user", status: 500};
   }
 }
@@ -65,7 +65,7 @@ export const deleteUser = async (id: bigint) => {
       return data
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return {error: "Failed to create user", status: 500};
   }
 }

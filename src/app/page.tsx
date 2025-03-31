@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Button,
   CircularProgress,
@@ -23,118 +23,31 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {createUser, deleteUser, getUsers, updateUser,} from "@/app/services/user";
-import {IUser} from "@/types";
+import {useUserActions} from "@/hooks/useUserActions";
 
 export default function UserTable() {
-  const [open, setOpen] = useState<boolean>(false)
-
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState<string>('')
-  const [dialogType, setDialogType] = useState<string>("")
-  const [users, setUsers] = useState<IUser[]>([])
-  const [selectedUser, setSelectedUser] = useState<IUser>()
-
-  const handleGetUsers = () => {
-    const handleOnGetUsers = async () => {
-      try {
-        setLoading(true)
-        const res = await getUsers()
-
-        if (res) {
-          setUsers(res)
-          setLoading(false)
-        }
-      } catch (error) {
-        console.log("error - getUser", error)
-      }
-    }
-
-    handleOnGetUsers()
-  }
-
-  const handleCreateUser = async () => {
-    try {
-      setLoading(true)
-      const res = await createUser({name})
-
-      if (res) {
-        handleCloseDialog()
-        setLoading(false)
-        handleGetUsers()
-      }
-    } catch (error) {
-      console.log("error - createUser", error)
-    }
-  }
-
-  const handleUpdateUser = async () => {
-    try {
-      setLoading(true)
-      if (selectedUser) {
-        const res = await updateUser(selectedUser)
-
-        if (res) {
-          handleCloseDialog()
-          setLoading(false)
-          handleGetUsers()
-        }
-      }
-    } catch (error) {
-      console.log("error - updateUser", error)
-    }
-  }
-
-  const handleDeleteUser = async () => {
-    try {
-      setLoading(true)
-      if (selectedUser) {
-        const res = await deleteUser(selectedUser.id)
-
-        if (res) {
-          handleCloseDialog()
-          setLoading(false)
-          handleGetUsers()
-        }
-      }
-    } catch (error) {
-      console.log("error - deleteUser", error)
-    }
-  }
-
-  const handleCloseDialog = () => {
-    setOpen(false)
-    setName("")
-  }
-
-  const handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value)
-  }
-
-  const handleSetSelectedUser = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedUser((prev) => {
-      return {
-        ...(prev ?? {} as IUser),
-        name: e.target.value
-      }
-    })
-  }
-  const handleOpenDialog = (type: string, user?: IUser) => () => {
-    if (user) {
-      setSelectedUser((user))
-    }
-    setDialogType(type)
-    setOpen(true)
-  }
-
-  useEffect(handleGetUsers, [])
+  const {
+    isLoading,
+    isOpen,
+    name,
+    dialogType,
+    selectedUser,
+    users,
+    handleCreateUser,
+    handleUpdateUser,
+    handleDeleteUser,
+    handleCloseDialog,
+    handleOpenDialog,
+    handleSetName,
+    handleSetSelectedUser,
+  } = useUserActions()
 
   const displayDialog = () => {
     switch (dialogType) {
       case "add":
       case "edit":
         return (
-            <Dialog open={open} onClose={handleCloseDialog}>
+            <Dialog open={isOpen} onClose={handleCloseDialog}>
               <DialogTitle>{dialogType === "add" ? "Create" : "Update"} User</DialogTitle>
               <DialogContent>
                 <TextField
@@ -162,7 +75,7 @@ export default function UserTable() {
         )
       case "delete":
         return (
-            <Dialog open={open} onClose={handleCloseDialog}>
+            <Dialog open={isOpen} onClose={handleCloseDialog}>
               <DialogTitle>Confirm Delete</DialogTitle>
               <DialogContent>
                 <Typography>
@@ -211,7 +124,7 @@ export default function UserTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading ? (
+              {isLoading ? (
                   <TableRow>
                     <TableCell colSpan={4} align="center">
                       <CircularProgress/>
