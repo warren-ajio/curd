@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   CircularProgress,
@@ -23,6 +23,7 @@ import {ModalDialog} from "@/components/ModalDialog"
 import {capitalize} from "@/utils/capitalize";
 
 export default function UserTable() {
+  const [isMounted, setIsMounted] = useState(false);
   const {
     isLoading,
     isOpen,
@@ -59,6 +60,16 @@ export default function UserTable() {
       confirmButtonLabel: 'Delete',
       handleOnSubmit: handleDeleteUser,
     }
+  }
+
+  const handleSetIsMounted = () => {
+    setIsMounted(true)
+  }
+
+  useEffect(handleSetIsMounted, [])
+
+  if (!isMounted) {
+    return null
   }
 
   return (
